@@ -1,0 +1,83 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ABOR	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+CWD	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+Command	ftp_struct.h	/^typedef struct Command$/;"	s
+Command	ftp_struct.h	/^}Command;$/;"	t	typeref:struct:Command
+DELE	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+Deal_Thread	ftp.c	/^void* Deal_Thread(void* fd)$/;"	f
+FTP_STRUCT_H	ftp_struct.h	2;"	d
+Find	ftp.c	/^int Find(Command* cmd)$/;"	f
+LIST	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+MDTM	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+MKD	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+NLST	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+NOOP	ftp_struct.h	/^    STOR, TYPE, USER, NOOP$/;"	e	enum:cmdlist
+PASS	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+PASV	ftp_struct.h	/^    ABOR, CWD, DELE, LIST, MDTM, MKD, NLST, PASS, PASV,$/;"	e	enum:cmdlist
+PORT	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+PWD	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+Port	ftp_struct.h	/^typedef struct Port$/;"	s
+Port	ftp_struct.h	/^}Port; $/;"	t	typeref:struct:Port
+QUIT	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+RETR	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+RMD	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+RNFR	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+RNTO	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+Response	ftp.c	/^void Response(Command* cmd,State* state)$/;"	f
+SITE	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+SIZE	ftp_struct.h	/^    PORT, PWD, QUIT, RETR, RMD, RNFR, RNTO, SITE, SIZE,$/;"	e	enum:cmdlist
+STOR	ftp_struct.h	/^    STOR, TYPE, USER, NOOP$/;"	e	enum:cmdlist
+SendClient	ftp.c	/^void SendClient(State* state)$/;"	f
+State	ftp_struct.h	/^typedef struct State$/;"	s
+State	ftp_struct.h	/^} State;$/;"	t	typeref:struct:State
+TYPE	ftp_struct.h	/^    STOR, TYPE, USER, NOOP$/;"	e	enum:cmdlist
+USER	ftp_struct.h	/^    STOR, TYPE, USER, NOOP$/;"	e	enum:cmdlist
+_Find	ftp.c	/^int _Find(char* cmd,const char** array,int count)$/;"	f
+_SIZE_	ftp_struct.h	16;"	d
+__FTP_H_	ftp.h	2;"	d
+arg	ftp_struct.h	/^	char arg[_SIZE_];$/;"	m	struct:Command
+cmdlist	ftp_struct.h	/^ enum cmdlist $/;"	g
+cmdlist_str	ftp_struct.h	/^static const char* cmdlist_str[]=$/;"	v
+command	ftp_struct.h	/^	char command[5];$/;"	m	struct:Command
+connection	ftp_struct.h	/^    int connection;$/;"	m	struct:State
+ftp_abor	ftp.c	/^void ftp_abor(State* state)$/;"	f
+ftp_cwd	ftp.c	/^void ftp_cwd(Command* cmd,State* state)$/;"	f
+ftp_dele	ftp.c	/^void ftp_dele(Command* cmd,State* state)$/;"	f
+ftp_list	ftp.c	/^void ftp_list(Command* cmd,State* state)$/;"	f
+ftp_mdtm	ftp.c	/^void ftp_mdtm(Command* cmd,State* state)$/;"	f
+ftp_mkd	ftp.c	/^void ftp_mkd(Command* cmd,State* state)$/;"	f
+ftp_mlst	ftp.c	/^void ftp_mlst(Command* cmd,State* state)$/;"	f
+ftp_noop	ftp.c	/^void ftp_noop(State* state)$/;"	f
+ftp_pass	ftp.c	/^void ftp_pass(Command* cmd,State* state)$/;"	f
+ftp_pasv	ftp.c	/^void ftp_pasv(Command* cmd,State* state)$/;"	f
+ftp_port	ftp.c	/^void ftp_port(Command* cmd,State* state)$/;"	f
+ftp_pwd	ftp.c	/^void ftp_pwd(Command* cmd,State* state)$/;"	f
+ftp_quit	ftp.c	/^void ftp_quit(Command* cmd,State* state)$/;"	f
+ftp_retr	ftp.c	/^void ftp_retr(Command* cmd,State* state)$/;"	f
+ftp_rmd	ftp.c	/^void ftp_rmd(Command* cmd,State* state)$/;"	f
+ftp_rnfr	ftp.c	/^void ftp_rnfr(Command* cmd,State* state)$/;"	f
+ftp_rnto	ftp.c	/^void ftp_rnto(Command* cmd,State* state)$/;"	f
+ftp_site	ftp.c	/^void ftp_site(Command* cmd,State* state)$/;"	f
+ftp_size	ftp.c	/^void ftp_size(Command* cmd,State* state)$/;"	f
+ftp_stor	ftp.c	/^void ftp_stor(Command* cmd,State* state)$/;"	f
+ftp_type	ftp.c	/^void ftp_type(Command* cmd,State* state)$/;"	f
+ftp_user	ftp.c	/^void ftp_user(Command* cmd,State* state)$/;"	f
+logged_in	ftp_struct.h	/^    int logged_in;$/;"	m	struct:State
+main	main.c	/^int main(int argc,char* argv[])$/;"	f
+message	ftp_struct.h	/^    char *message;$/;"	m	struct:State
+mode	ftp_struct.h	/^    int mode;$/;"	m	struct:State
+p1	ftp_struct.h	/^	int p1;$/;"	m	struct:Port
+p2	ftp_struct.h	/^	int p2;$/;"	m	struct:Port
+parse_cmd	ftp.c	/^void parse_cmd(char* buf,Command *cmd)$/;"	f
+sock_pasv	ftp_struct.h	/^    int sock_pasv;$/;"	m	struct:State
+startup	ftp.c	/^int startup(char* ip,int port)$/;"	f
+tr_pid	ftp_struct.h	/^    int tr_pid;$/;"	m	struct:State
+username	ftp_struct.h	/^    char *username;$/;"	m	struct:State
+username_ok	ftp_struct.h	/^    int username_ok;$/;"	m	struct:State
+usernames	ftp_struct.h	/^static const char* usernames[] = $/;"	v
+welcome_message	ftp_struct.h	/^static char* welcome_message = "200 welcome using ftp\\n";$/;"	v
