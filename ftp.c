@@ -269,13 +269,32 @@ void ftp_pasv(Command* cmd,State* state)
 		int ip[4];
 		char buf[255];
 		char *response="227 Entering PASV Mode(%d,%d,%d,%d,%d,%d)\n";
+
 		Port *port = (Port*) malloc(sizeof(Port));
+		get_ip(state->connection,ip);
 		get_port(port);
-		state->sock_pasv = create_socket((255*port->p1)+port->p2);
-		printf("port %d\n",256*port->p1+port->p2);
-		sprintf(buff,response,ip[0],ip[1],ip[2],ip[3],port->p1,port->p2);
 		
-		state->message = buff;
+		/*此时： 
+		 * ip地址没有发生改变，但是有了新的port，所以套接字也将发生变化：
+		 * 
+		 * 赶紧思考 “ 被动模式”：
+		 * 1. 客户端第一次连接服务器21端口时，顺带让服务器告诉它自己可连接的服务器端口 ： 第一次连接的意义 就是 控制连接，
+		 * 2. 客户端因为知道了服务器提供的第二个端口，此时发生再次请求连接	，此时第二个套接字也是监听套接，但此时的连接则是：数据连接
+		 * 3. 有了数据连接了之后就可以通过该连接来进行文件下载和上传
+		 *
+		 * 4.实现主动模式的思路就是：此时将客户端的某一个端口进行套接字监听，然后告诉服务器，再然后就让服务器的进行反向连接。/相当与把服务器当作一个客户端去编写
+		 * 
+		 * 
+		 *
+		 * 1. 此时客户端的ip地址，和服务器的ip地址没有发生改变
+		 * 2. 服务器的端口
+		 * */
+
+		state->sock_pasv = create_socket((256*port->p1)+port->p2);
+		printf("port %d\n",256*port->p1+port->p2);
+		sprintf(buf,response,ip[0],ip[1],ip[2],ip[3],port->p1,port->p2);
+		
+		state->message = buf;
 		state->mode=SERVER;
 		puts(state->message);
 		
@@ -283,7 +302,7 @@ void ftp_pasv(Command* cmd,State* state)
 	}
 	else
 	{
-		state->message= "530 Please login with USER or PASS\n"
+		state->message= "530 Please login with USER or PASS\n";
 	}
 		SendClient(state);
 }
@@ -292,12 +311,92 @@ void ftp_port(Command* cmd,State* state)
 }
 void ftp_pwd(Command* cmd,State* state)
 {
+	if(state->logged_in)
+	{	
+		char cwd[_SIZE_];
+		char result[_SIZE_];
+		memset(result,0,_SIZE_);
+
+		if(getcwd(cwd,_SIZE_)!=NULL)
+		{
+			strcat(result,"257 \"");
+			strcat(result,cwd);
+			strcat(result,"\"\n");
+			state->message=result;
+		}else
+		{
+			state->message="550 Failed to get pwd\n";
+		}
+		SendClient(state);
+	}
 }
 void ftp_quit(Command* cmd,State* state)
 {
 }
-void ftp_retr(Command* cmd,State* state)
+void ftp_retr(Command* cmd,State* state)//download
 {
+	int connection;
+	int fd;
+	struct stat stat_buf;
+	off_t offset = 0;
+	int sent_total = 0;
+	if(state->logged_in)
+	{
+		if(state->mode == SERVER)
+		{
+			if(access(cmd->arg,R_OK)== 0&&(fd = open(cmd->arg,O_RDONLY)))
+			{
+				fstat(fd,&stat_buf);	
+				state->message = "150 Opening Binary mode data connection";
+				SendClient(state);
+				/******************************************/
+				connection = accept_connection(state->sock_pasv);
+				if(connection < 0)
+				{
+					perror("sock_pasv accept failed!\n");
+					
+					return ;
+				}
+				close(state->sock_pasv);//关闭监听的旧有socket
+				/**********************************/
+			if(sent_total = sendfile(connection,fd,&offset,stat_buf.st_size))
+			{
+				if(sent_total!=stat_buf.st_size)
+				{
+					state->message = "Send failed: Please Retr again!\n";
+			
+				}
+				else
+				{
+					state->message = "226 File send OK \n";
+				}
+			}	
+			else //sendfile failed!
+			{
+				state->message = "550 Failed to read file\n";	
+			}
+
+		}
+			else //access
+	 	    {
+		    	state->message = "550 Failed to get file\n";
+	    	}
+		
+    	}
+		else //mode!=SERVER
+		{
+			state->message = "530 Please login with USER and PASS\n";
+		}
+   }
+	else //logged_in failed
+	{
+		state->message="530 Please login\n"	;
+	}
+	close(fd);
+	close(connection);
+	SendClient(state);
+
+
 }
 void ftp_rmd(Command* cmd,State* state)
 {
@@ -348,10 +447,10 @@ int _Find(char* str,const char** array,int count)
 
 void get_port(Port* port)
 {
-	rand(time(NULL));
+	srand(time(NULL));
 	port->p1=128+(rand()%64);
 	port->p2 = rand()%0xff;
-	printf("Port : %d, %d\n",p1,p2);
+	printf("Port : %d, %d\n",port->p1,port->p2);
 }
 
 
@@ -365,7 +464,51 @@ void get_ip(int sockfd,int *ip)
 	host = (addr.sin_addr.s_addr);
 	for(i=0;i<4;i++)
 	{
-		ip[i]=(host>>i)&0xff;
+		ip[i]=(host>>i*8)&0xff;
 	}
 
+}
+
+int create_socket(int port)
+{
+    int sock;
+    int reuse = 1;
+    struct sockaddr_in server_address = (struct sockaddr_in){
+       AF_INET,
+       htons(port),
+       (struct in_addr){INADDR_ANY}
+    };
+
+
+    if((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+        fprintf(stderr, "Cannot open socket");
+        exit(EXIT_FAILURE);
+    }
+
+    /* Address can be reused instantly after program exits */
+    setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof reuse);
+
+    /* Bind socket to server address */
+    if(bind(sock,(struct sockaddr*) &server_address, sizeof(server_address)) < 0){
+        fprintf(stderr, "Cannot bind socket to address");
+        exit(EXIT_FAILURE);
+    }
+
+    listen(sock,5);
+    return sock;
+}
+
+
+int accept_connection(int socket)
+{
+	int addrlen = 0;
+	struct sockaddr_in client_addr;
+	int fd;
+	addrlen=sizeof(client_addr);
+	if(fd = accept(socket,(struct sockaddr*)&client_addr,&addrlen)<0)
+	{
+		perror("Retr failed\n");
+		return -1;
+	}
+	return fd;
 }
